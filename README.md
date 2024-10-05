@@ -98,6 +98,39 @@ The loop() function continuously monitors the MPU6050 data and performs PID comp
 
 Interrupts are used to efficiently read sensor data from the MPU6050.
 
+
+**⚙️ How It Works**
+
+Tilt Detection (MPU6050 Sensor):
+
+The MPU6050 Gyroscope/Accelerometer continuously measures the robot’s tilt angle (pitch) and sends the data to the Arduino.
+
+PID Control System:
+
+A PID controller (Proportional, Integral, Derivative) processes the tilt data to calculate the necessary adjustments in motor speed and direction.
+
+Kp corrects the current tilt, Ki compensates for accumulated error, and Kd smooths rapid movements.
+
+Motor Adjustment:
+
+
+Based on the PID output, the L298N Motor Driver adjusts the speed of the DC motors.
+
+If the robot tilts forward, the wheels spin forward; if it tilts backward, the wheels reverse.
+
+Real-Time Feedback Loop:
+
+The sensor continuously provides new tilt data, which is fed back into the PID controller. This creates a real-time loop where the robot is constantly making
+
+micro-adjustments to stay balanced.
+
+Motion Commands:
+
+The main functions (Forward(), Reverse(), Stop()) control motor movement. These are triggered based on the PID output and keep the robot upright by adjusting
+
+wheel direction and speed dynamically.
+
+
 **💡 Conclusion**
 
 Building a self-balancing robot is a fantastic project that introduces you to the world of sensors, feedback control, and motor control. We hope you find this guide helpful as you build your own version of the bot. Don’t forget to experiment, learn, and have fun!
