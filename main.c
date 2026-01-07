@@ -1,11 +1,11 @@
 // Include necessary libraries
-#include "I2Cdev.h"                              // Part of the I2Cdev library (https://github.com/jrowberg/i2cdevlib)
-#include <PID_v1.h>                              // PID library (https://github.com/br3ttb/Arduino-PID-Library)
-#include "MPU6050_6Axis_MotionApps20.h"         // MPU6050 library (https://github.com/jrowberg/i2cdevlib)
-// Include Wire library for I2C communication
-#include <Wire.h>                                // Built-in Arduino library for I2C communication
+#include "I2Cdev.h"                               
+#include <PID_v1.h>                               
+#include "MPU6050_6Axis_MotionApps20.h"          
+ 
+#include <Wire.h>                               
 
-// Define constants and pin assignments
+ 
 #define motorPin1 6
 #define motorPin2 9
 #define motorPin3 10
