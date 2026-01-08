@@ -1,138 +1,112 @@
-**🛠️ Self-Balancing Robot Using Arduino**
+<h1>Self-Balancing Robot Using Arduino</h1>
 
-This project demonstrates a self-balancing robot using an Arduino Uno, controlled by a PID algorithm. The robot maintains balance by detecting its tilt angle with an MPU6050 Gyroscope/Accelerometer and adjusts motor speeds accordingly using a L298N Motor Driver.
+<p>
+This project demonstrates a <b>self-balancing two-wheeled robot</b> using an
+<b>Arduino Uno</b> and a <b>PID control algorithm</b>.
+The robot maintains balance by detecting its tilt angle using an
+<b>MPU6050 Gyroscope/Accelerometer</b> and adjusting motor speed via an
+<b>L298N Motor Driver</b>.
+</p>
 
-**🚩 Project Objective**
+<hr>
 
-To build a robot that autonomously maintains balance on two wheels by continuously adjusting motor movements based on real-time tilt data provided by a gyroscope sensor.
+<h2>Project Objective</h2>
 
-**⚙️ Hardware Components**
+<p>
+To build a robot that autonomously maintains balance on two wheels by
+continuously correcting its tilt using real-time sensor feedback.
+</p>
 
-Arduino Uno: Microcontroller that processes sensor data and controls the motors.
-MPU6050: 6-axis gyroscope and accelerometer for detecting the robot’s tilt (yaw, pitch, roll).
-2 x Geared DC Motors: Drives the robot's wheels forward and backward.
-L298N Motor Driver: H-bridge motor driver for controlling motor direction and speed.
-7.4V Li-ion Battery: Powers the Arduino and the motors.
-Wheels & Chassis: Robot base structure.
-Wiring and Connectors: Basic connectors and wiring to integrate the components.
+<hr>
 
+<h2>Hardware Components</h2>
 
-**🧠 Control System Overview**
+<ul>
+  <li><b>Arduino Uno</b> – Main microcontroller</li>
+  <li><b>MPU6050</b> – Gyroscope & accelerometer (tilt sensing)</li>
+  <li><b>L298N Motor Driver</b> – Motor speed and direction control</li>
+  <li><b>2 × DC Geared Motors</b> – Wheel actuation</li>
+  <li><b>7.4V Li-ion Battery</b> – Power supply</li>
+  <li><b>Wheels & Chassis</b> – Mechanical structure</li>
+</ul>
 
-MPU6050 Sensor
-The MPU6050 detects the robot's tilt. It continuously feeds the Yaw, Pitch, and Roll (YPR) data to the Arduino. The pitch angle is primarily used to determine the robot's inclination.
+<hr>
 
-PID Controller
-A PID (Proportional, Integral, Derivative) control system is implemented to keep the robot balanced:
+<h2>Control System Overview</h2>
 
-Kp (Proportional): Reacts to the current tilt angle.
+<h3>MPU6050 Sensor</h3>
+<p>
+The MPU6050 continuously measures the robot’s orientation and provides
+<b>Yaw, Pitch, and Roll</b> data.  
+The <b>pitch angle</b> is used as the primary input for balancing.
+</p>
 
-Ki (Integral): Corrects accumulated past errors.
+<h3>PID Controller</h3>
+<p>
+A <b>PID (Proportional–Integral–Derivative)</b> controller computes motor
+corrections to maintain the upright position.
+</p>
 
-Kd (Derivative): Predicts future tilt behavior to stabilize movements.
+<ul>
+  <li><b>Kp (21)</b> – Corrects current tilt</li>
+  <li><b>Ki (140)</b> – Eliminates accumulated error</li>
+  <li><b>Kd (0.8)</b> – Smooths rapid movements</li>
+</ul>
 
-Tuning Values:
+<p>
+<b>Setpoint:</b> 176° (upright position)
+</p>
 
-Setpoint: 176 (the angle when the robot is perfectly upright).
+<hr>
 
-Kp: 21 (handles immediate correction).
+<h2>Key Operations</h2>
 
-Ki: 140 (compensates for persistent drift).
-
-Kd: 0.8 (smoothens response).
-
-The PID controller adjusts the PWM values fed to the motors, controlling their speed and direction to maintain the robot's balance.
-
-
-**🔑 Key Functions in Code**
-
-
-MPU6050 Initialization Initializes the I2C connection with the MPU6050, calibrates the sensor, and sets the gyro offsets.
-
-
+<h3>Sensor Initialization</h3>
+<pre><code>
 mpu.initialize();
-
 mpu.setXGyroOffset(220);
-
 mpu.setYGyroOffset(76);
-
 mpu.setZGyroOffset(-85);
-
 mpu.setZAccelOffset(1688);
+</code></pre>
 
-PID Calculation The PID library computes motor adjustments based on real-time input (tilt) from the sensor.
+<h3>Tilt Calculation</h3>
+<pre><code>
+mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
+input = ypr[1] * 180 / M_PI + 180;
+</code></pre>
 
-
-
+<h3>PID Computation & Motor Control</h3>
+<pre><code>
 pid.Compute();
 
-Motor Control The robot moves forward or backward based on the PID output. If the robot tilts forward, the wheels spin forward, and if it tilts backward, the wheels reverse.
-
-
 if (output > 0) Forward();
-
 else Reverse();
+</code></pre>
 
-Reading Tilt Data The DMP (Digital Motion Processor) of the MPU6050 processes sensor data for faster readings. The pitch value is used as the input for the PID controller.
+<hr>
 
+<h2>How It Works</h2>
 
-mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
+<ul>
+  <li>The MPU6050 detects the robot’s tilt angle.</li>
+  <li>The PID controller calculates the required correction.</li>
+  <li>The motor driver adjusts motor speed and direction.</li>
+  <li>This feedback loop runs continuously to maintain balance.</li>
+</ul>
 
-input = ypr[1] * 180/M_PI + 180;
+<hr>
 
+<h2>Conclusion</h2>
 
-**
-**🧩 Code Structure****
+<p>
+This project demonstrates the practical use of <b>feedback control,
+sensor fusion, and motor control</b> in robotics.
+It serves as an excellent introduction to <b>PID control systems</b> and
+real-time embedded programming.
+</p>
 
-robot_code.ino: The main Arduino code file that contains:
-
-MPU6050 setup and interrupt handling.
-
-PID tuning and motor control logic.
-
-Functions to drive the motors: Forward(), Reverse(), and Stop().
-
-Main Loops & Logic
-
-The loop() function continuously monitors the MPU6050 data and performs PID computations to adjust the motor speed.
-
-Interrupts are used to efficiently read sensor data from the MPU6050.
-
-
-**⚙️ How It Works**
-
-Tilt Detection (MPU6050 Sensor):
-
-The MPU6050 Gyroscope/Accelerometer continuously measures the robot’s tilt angle (pitch) and sends the data to the Arduino.
-
-PID Control System:
-
-A PID controller (Proportional, Integral, Derivative) processes the tilt data to calculate the necessary adjustments in motor speed and direction.
-
-Kp corrects the current tilt, Ki compensates for accumulated error, and Kd smooths rapid movements.
-
-Motor Adjustment:
-
-
-Based on the PID output, the L298N Motor Driver adjusts the speed of the DC motors.
-
-If the robot tilts forward, the wheels spin forward; if it tilts backward, the wheels reverse.
-
-Real-Time Feedback Loop:
-
-The sensor continuously provides new tilt data, which is fed back into the PID controller. This creates a real-time loop where the robot is constantly making
-
-micro-adjustments to stay balanced.
-
-Motion Commands:
-
-The main functions (Forward(), Reverse(), Stop()) control motor movement. These are triggered based on the PID output and keep the robot upright by adjusting
-
-wheel direction and speed dynamically.
-
-
-**💡 Conclusion**
-
-Building a self-balancing robot is a fantastic project that introduces you to the world of sensors, feedback control, and motor control. We hope you find this guide helpful as you build your own version of the bot. Don’t forget to experiment, learn, and have fun!
-
-Stay tuned for more updates as we continue to improve the project and explore new features
+<p>
+Experiment with PID tuning and mechanical adjustments to improve stability
+and performance.
+</p>
